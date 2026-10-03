@@ -77,7 +77,7 @@ export default function Header() {
     return () => clearTimeout(timer);
   }, [drawerSearchText]);
 
-  cconst getAvatarUrl = (path) => {
+  const getAvatarUrl = (path) => {
   if (!path) return "";
 
   if (path.startsWith("http") || path.startsWith("blob")) {
@@ -87,7 +87,7 @@ export default function Header() {
   const cleanPath = path.startsWith("/") ? path : `/${path}`;
 
   return `https://gocartappbackend-production.up.railway.app${cleanPath}`;
-};
+   };
 
   const getInitials = (nameStr) => {
     if (!nameStr) return 'U';
