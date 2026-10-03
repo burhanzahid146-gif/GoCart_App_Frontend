@@ -78,16 +78,16 @@ export default function Header() {
   }, [drawerSearchText]);
 
   const getAvatarUrl = (path) => {
-  if (!path) return "";
+    if (!path) return "";
 
-  if (path.startsWith("http") || path.startsWith("blob")) {
-    return path;
-  }
+    if (path.startsWith("http") || path.startsWith("blob")) {
+      return path;
+    }
 
-  const cleanPath = path.startsWith("/") ? path : `/${path}`;
+    const cleanPath = path.startsWith("/") ? path : `/${path}`;
 
-  return `https://gocartappbackend-production.up.railway.app${cleanPath}`;
-   };
+    return `https://gocartappbackend-production.up.railway.app${cleanPath}`;
+  };
 
   const getInitials = (nameStr) => {
     if (!nameStr) return 'U';
@@ -127,7 +127,8 @@ export default function Header() {
     dispatch(logout());            
     useNavigateInstance('/login');  
   };
-// Helper function to handle direct buy safely with complete number sanitization
+
+  // Helper function to handle direct buy safely with complete number sanitization
   const handleDirectBuy = (product) => {
     handleDrawerToggle();
     
@@ -417,7 +418,7 @@ export default function Header() {
 
       {/* Bottom Footer Actions inside Sidebar */}
       <Box sx={{ p: 2, borderTop: '1px solid rgba(255, 255, 255, 0.08)' }}>
-        {token ? (
+        {token && (
           <ListItemButton 
             onClick={() => { handleLogout(); handleDrawerToggle(); }}
             sx={{ borderRadius: '8px', color: '#ff4d4d', '&:hover': { bgcolor: 'rgba(255, 77, 77, 0.15)' } }}
@@ -425,44 +426,6 @@ export default function Header() {
             <ListItemIcon sx={{ color: 'inherit', minWidth: 40 }}><LogoutIcon /></ListItemIcon>
             <ListItemText primary="Logout" primaryTypographyProps={{ fontWeight: 600 }} />
           </ListItemButton>
-        ) : (
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-            <Button
-              component={Link}
-              to="/login"
-              onClick={handleDrawerToggle}
-              fullWidth
-              variant="outlined"
-              sx={{ 
-                borderColor: '#ff6f00', 
-                color: '#ff6f00', 
-                textTransform: 'none', 
-                fontWeight: 600,
-                borderRadius: '8px',
-                py: 1
-              }}
-            >
-              Login
-            </Button>
-            <Button
-              component={Link}
-              to="/register"
-              onClick={handleDrawerToggle}
-              fullWidth
-              variant="contained"
-              sx={{ 
-                bgcolor: '#ff6f00', 
-                color: '#ffffff', 
-                textTransform: 'none', 
-                fontWeight: 600,
-                borderRadius: '8px',
-                py: 1,
-                '&:hover': { bgcolor: '#e66300' }
-              }}
-            >
-              Register
-            </Button>
-          </Box>
         )}
       </Box>
     </Box>
@@ -525,32 +488,34 @@ export default function Header() {
               </Typography>
             </Box>
 
-            {/* 📱 Mobile Only Sidebar Trigger Icon */}
-            <Box sx={{ display: { xs: 'flex', sm: 'none' }, mr: 1 }}>
-              <IconButton
-                size="large"
-                aria-label="open drawer"
-                onClick={handleDrawerToggle}
-                sx={{ color: '#ffffff' }}
-              >
-                <MenuIcon />
-              </IconButton>
+            {/* 📱 Mobile Only Sidebar Trigger Icon (Only visible when logged in / token exists) */}
+            {token && (
+              <Box sx={{ display: { xs: 'flex', sm: 'none' }, mr: 1 }}>
+                <IconButton
+                  size="large"
+                  aria-label="open drawer"
+                  onClick={handleDrawerToggle}
+                  sx={{ color: '#ffffff' }}
+                >
+                  <MenuIcon />
+                </IconButton>
 
-              <Drawer
-                anchor="left"
-                open={mobileOpen}
-                onClose={handleDrawerToggle}
-                ModalProps={{
-                  keepMounted: true, 
-                }}
-                sx={{
-                  display: { xs: 'block', sm: 'none' },
-                  '& .MuiDrawer-paper': { boxSizing: 'border-box', width: 300, bgcolor: '#121212' },
-                }}
-              >
-                {drawerContent}
-              </Drawer>
-            </Box>
+                <Drawer
+                  anchor="left"
+                  open={mobileOpen}
+                  onClose={handleDrawerToggle}
+                  ModalProps={{
+                    keepMounted: true, 
+                  }}
+                  sx={{
+                    display: { xs: 'block', sm: 'none' },
+                    '& .MuiDrawer-paper': { boxSizing: 'border-box', width: 300, bgcolor: '#121212' },
+                  }}
+                >
+                  {drawerContent}
+                </Drawer>
+              </Box>
+            )}
 
             {/* Logo & Brand Name (Mobile Only - pushed right via flexGrow: 1) */}
             <Box 
@@ -561,6 +526,7 @@ export default function Header() {
                 alignItems: 'center', 
                 textDecoration: 'none',
                 flexGrow: 1,
+                justify5Content: 'flex-end',
                 justifyContent: 'flex-end'
               }}
             >
