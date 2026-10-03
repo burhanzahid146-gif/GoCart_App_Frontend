@@ -416,18 +416,20 @@ export default function Header() {
         )}
       </Box>
 
-      {/* Bottom Footer Actions inside Sidebar */}
-      <Box sx={{ p: 2, borderTop: '1px solid rgba(255, 255, 255, 0.08)' }}>
-        {token && (
-          <ListItemButton 
-            onClick={() => { handleLogout(); handleDrawerToggle(); }}
-            sx={{ borderRadius: '8px', color: '#ff4d4d', '&:hover': { bgcolor: 'rgba(255, 77, 77, 0.15)' } }}
-          >
-            <ListItemIcon sx={{ color: 'inherit', minWidth: 40 }}><LogoutIcon /></ListItemIcon>
-            <ListItemText primary="Logout" primaryTypographyProps={{ fontWeight: 600 }} />
-          </ListItemButton>
-        )}
-      </Box>
+      {/* Bottom Footer Actions inside Sidebar (Hidden when searching in drawer) */}
+      {!isSearchingInDrawer && (
+        <Box sx={{ p: 2, borderTop: '1px solid rgba(255, 255, 255, 0.08)' }}>
+          {token && (
+            <ListItemButton 
+              onClick={() => { handleLogout(); handleDrawerToggle(); }}
+              sx={{ borderRadius: '8px', color: '#ff4d4d', '&:hover': { bgcolor: 'rgba(255, 77, 77, 0.15)' } }}
+            >
+              <ListItemIcon sx={{ color: 'inherit', minWidth: 40 }}><LogoutIcon /></ListItemIcon>
+              <ListItemText primary="Logout" primaryTypographyProps={{ fontWeight: 600 }} />
+            </ListItemButton>
+          )}
+        </Box>
+      )}
     </Box>
   );
 
@@ -517,7 +519,7 @@ export default function Header() {
               </Box>
             )}
 
-            {/* Logo & Brand Name (Mobile Only - pushed right via flexGrow: 1) */}
+            {/* Logo & Brand Name (Mobile Only) */}
             <Box 
               component={Link} 
               to="/" 
@@ -526,7 +528,6 @@ export default function Header() {
                 alignItems: 'center', 
                 textDecoration: 'none',
                 flexGrow: 1,
-                justify5Content: 'flex-end',
                 justifyContent: 'flex-end'
               }}
             >
