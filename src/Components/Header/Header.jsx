@@ -1,25 +1,9 @@
 import * as React from 'react';
-import {
-  AppBar,
-  Box,
-  Toolbar,
-  Typography,
-  Button,
-  IconButton,
-  Avatar,
-  Menu,
-  MenuItem,
-  Container,
-  InputBase,
-  Drawer,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemText,
-  ListItemIcon,
-  Divider,
-  TextField,
-  CircularProgress
+import { 
+  AppBar, Box, Toolbar, Typography, Button, 
+  IconButton, Avatar, Menu, MenuItem, Container, InputBase,
+  Drawer, List, ListItem, ListItemButton, ListItemText, ListItemIcon, Divider,
+  TextField, CircularProgress
 } from '@mui/material';
 
 import SearchIcon from '@mui/icons-material/Search';
@@ -33,331 +17,139 @@ import PersonIcon from '@mui/icons-material/Person';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
-import { Link, useNavigate, useLocation } from 'react-router';
-import { useDispatch, useSelector } from 'react-redux';
+import { Link, useNavigate, useLocation } from 'react-router'; 
+import { useDispatch, useSelector } from 'react-redux'; 
 
-import {
-  logout,
-  setSearchQuery,
-  getMe
+import { 
+  logout, 
+  setSearchQuery, 
+  getMe 
 } from '../../Pages/features/authenticationSlice/authenticationSlice';
-
-
-// =====================================================
-// DUMMY PRODUCTS FOR DRAWER SEARCH
-// =====================================================
-
-const dummyProducts = [
-  {
-    id: 9901,
-    title: "Classic Black Leather Jacket",
-    price: 120,
-    category: "men's clothing",
-    image:
-      "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: 9902,
-    title: "Minimalist Casual White Sneakers",
-    price: 75.5,
-    category: "footwear",
-    image:
-      "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: 9903,
-    title: "Modern Wireless Over-Ear Headphones",
-    price: 199.99,
-    category: "electronics",
-    image:
-      "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: 9904,
-    title: "Smart Fitness Tracking Watch",
-    price: 149,
-    category: "electronics",
-    image:
-      "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: 9905,
-    title: "Elegant Silver Wristwatch",
-    price: 89.99,
-    category: "accessories",
-    image:
-      "https://images.unsplash.com/photo-1524805444758-089113d48a6d?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: 9906,
-    title: "Designer Polarized Sunglasses",
-    price: 45,
-    category: "accessories",
-    image:
-      "https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: 9907,
-    title: "Waterproof Urban Travel Backpack",
-    price: 65,
-    category: "bags",
-    image:
-      "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: 9908,
-    title: "Casual Cotton Crewneck T-Shirt",
-    price: 25,
-    category: "men's clothing",
-    image:
-      "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: 9909,
-    title: "Professional DSLR Camera",
-    price: 850,
-    category: "electronics",
-    image:
-      "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: 9910,
-    title: "Compact Portable Bluetooth Speaker",
-    price: 55,
-    category: "electronics",
-    image:
-      "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: 9911,
-    title: "Stunning Diamond Gold Ring",
-    price: 450,
-    category: "jewelery",
-    image:
-      "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: 9912,
-    title: "Delicate Pearl Pendant Necklace",
-    price: 120,
-    category: "jewelery",
-    image:
-      "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: 9913,
-    title: "Bohemian Chic Summer Dress",
-    price: 60,
-    category: "women's clothing",
-    image:
-      "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: 9914,
-    title: "Cozy Knit Oversized Sweater",
-    price: 70,
-    category: "women's clothing",
-    image:
-      "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: 9915,
-    title: "Athletic Running Sports Shoes",
-    price: 90,
-    category: "footwear",
-    image:
-      "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: 9916,
-    title: "Stainless Steel Insulated Water Bottle",
-    price: 28,
-    category: "accessories",
-    image:
-      "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: 9917,
-    title: "Ergonomic Mechanical Gaming Keyboard",
-    price: 110,
-    category: "electronics",
-    image:
-      "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: 9918,
-    title: "High-Precision Wireless Gaming Mouse",
-    price: 65,
-    category: "electronics",
-    image:
-      "https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: 9919,
-    title: "Luxury Leather Office Briefcase",
-    price: 180,
-    category: "bags",
-    image:
-      "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=500&auto=format&fit=crop&q=60"
-  },
-  {
-    id: 9920,
-    title: "Modern Ceramic Coffee Mug",
-    price: 18,
-    category: "home & kitchen",
-    image:
-      "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=500&auto=format&fit=crop&q=60"
-  }
-];
-
 
 export default function Header() {
 
-  const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [mobileOpen, setMobileOpen] = React.useState(false); 
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
-  // Drawer Search
+  // Sidebar Search states
   const [isSearchingInDrawer, setIsSearchingInDrawer] = React.useState(false);
   const [drawerSearchText, setDrawerSearchText] = React.useState('');
   const [searchResults, setSearchResults] = React.useState([]);
   const [loadingSearch, setLoadingSearch] = React.useState(false);
 
-  const dispatch = useDispatch();
-  const useNavigateInstance = useNavigate();
-  const location = useLocation();
+  const dispatch = useDispatch();        
+  const useNavigateInstance = useNavigate();        
+  const location = useLocation(); 
 
-  const token =
-    useSelector((state) => state.authentication?.token) ||
-    localStorage.getItem('token');
+  const token = useSelector(
+    (state) => state.authentication?.token
+  ) || localStorage.getItem('token');
 
   const user = useSelector(
     (state) => state.authentication?.user
-  );
+  ); 
 
   const searchQuery = useSelector(
     (state) => state.authentication?.searchQuery || ''
   );
 
-  const isAdmin =
-    user?.role === 'admin' ||
-    user?.role === 'Admin';
-
-  // =====================================================
-  // LOGGED IN
-  // =====================================================
-
-  const isLoggedIn = Boolean(token);
-
-
-  // =====================================================
-  // GET CURRENT USER
-  // =====================================================
+  const isAdmin = user?.role === 'admin' || user?.role === 'Admin';
 
   React.useEffect(() => {
-
     if (!user && token) {
       dispatch(getMe());
     }
-
   }, [dispatch, user, token]);
 
 
-  // =====================================================
-  // CLOSE DRAWER WHEN LOGGED OUT
-  // =====================================================
+  // ============================================
+  // DRAWER SEARCH
+  // ============================================
 
   React.useEffect(() => {
 
-    if (!isLoggedIn) {
+    const fetchDrawerProducts = async () => {
 
-      setMobileOpen(false);
+      if (!drawerSearchText.trim()) {
+        setSearchResults([]);
+        return;
+      }
 
-      setIsSearchingInDrawer(false);
+      setLoadingSearch(true);
 
-      setDrawerSearchText('');
+      try {
 
-      setSearchResults([]);
-    }
-
-  }, [isLoggedIn]);
-
-
-  // =====================================================
-  // DUMMY PRODUCT SEARCH
-  // =====================================================
-
-  React.useEffect(() => {
-
-    if (!drawerSearchText.trim()) {
-
-      setSearchResults([]);
-
-      return;
-    }
-
-    setLoadingSearch(true);
-
-    const timer = setTimeout(() => {
-
-      const query = drawerSearchText
-        .trim()
-        .toLowerCase();
-
-      const filtered = dummyProducts.filter((product) => {
-
-        const title =
-          product.title?.toLowerCase() || '';
-
-        const category =
-          product.category?.toLowerCase() || '';
-
-        return (
-          title.includes(query) ||
-          category.includes(query)
+        const response = await fetch(
+          'https://fakestoreapi.com/products'
         );
 
-      });
+        const data = await response.json();
 
-      setSearchResults(filtered);
+        const productsList = Array.isArray(data) ? data : [];
 
-      setLoadingSearch(false);
+        const filtered = productsList.filter(product => {
 
-    }, 250);
+          const title = product.title || product.name || '';
+
+          return title
+            .toLowerCase()
+            .includes(drawerSearchText.toLowerCase());
+
+        });
+
+        setSearchResults(filtered);
+
+      } catch (err) {
+
+        console.error(
+          "Error fetching fake api products:",
+          err
+        );
+
+      } finally {
+
+        setLoadingSearch(false);
+
+      }
+
+    };
+
+    const timer = setTimeout(
+      fetchDrawerProducts,
+      300
+    );
 
     return () => clearTimeout(timer);
 
   }, [drawerSearchText]);
 
 
-  // =====================================================
+  // ============================================
   // AVATAR URL
-  // =====================================================
+  // ============================================
 
   const getAvatarUrl = (path) => {
 
-    if (!path) return '';
+    if (!path) return "";
 
     if (
-      path.startsWith('http://') ||
-      path.startsWith('https://') ||
-      path.startsWith('blob:')
+      path.startsWith("http") ||
+      path.startsWith("blob")
     ) {
       return path;
     }
 
-    const normalizedPath = path.replace(/\\/g, '/');
-
-    const cleanPath = normalizedPath.startsWith('/')
-      ? normalizedPath
-      : `/${normalizedPath}`;
+    const cleanPath = path.startsWith("/")
+      ? path
+      : `/${path}`;
 
     return `https://gocartappbackend-production.up.railway.app${cleanPath}`;
   };
 
 
-  // =====================================================
-  // GET INITIALS
-  // =====================================================
+  // ============================================
+  // INITIALS
+  // ============================================
 
   const getInitials = (nameStr) => {
 
@@ -369,62 +161,48 @@ export default function Header() {
       .join('')
       .toUpperCase()
       .slice(0, 2);
+
   };
 
 
-  // =====================================================
+  // ============================================
   // DRAWER TOGGLE
-  // =====================================================
+  // ============================================
 
   const handleDrawerToggle = () => {
 
-    setMobileOpen(prev => {
+    setMobileOpen(!mobileOpen);
 
-      const newState = !prev;
+    if (mobileOpen) {
 
-      if (newState === false) {
+      setIsSearchingInDrawer(false);
+      setDrawerSearchText('');
+      setSearchResults([]);
 
-        setIsSearchingInDrawer(false);
-
-        setDrawerSearchText('');
-
-        setSearchResults([]);
-      }
-
-      return newState;
-    });
+    }
 
   };
 
 
-  // =====================================================
+  // ============================================
   // USER MENU
-  // =====================================================
+  // ============================================
 
   const handleOpenUserMenu = (event) => {
-
     setAnchorElUser(event.currentTarget);
-
   };
-
 
   const handleCloseUserMenu = () => {
-
     setAnchorElUser(null);
-
   };
 
 
-  // =====================================================
-  // DESKTOP SEARCH
-  // =====================================================
+  // ============================================
+  // SEARCH
+  // ============================================
 
   const handleSearchChange = (e) => {
-
-    dispatch(
-      setSearchQuery(e.target.value)
-    );
-
+    dispatch(setSearchQuery(e.target.value));
   };
 
 
@@ -443,44 +221,28 @@ export default function Header() {
   };
 
 
-  // =====================================================
+  // ============================================
   // LOGOUT
-  // =====================================================
+  // ============================================
 
   const handleLogout = () => {
 
     handleCloseUserMenu();
 
-    setMobileOpen(false);
-
-    setIsSearchingInDrawer(false);
-
-    setDrawerSearchText('');
-
-    setSearchResults([]);
-
     dispatch(logout());
-
-    localStorage.removeItem('token');
 
     useNavigateInstance('/login');
 
   };
 
 
-  // =====================================================
+  // ============================================
   // DIRECT BUY
-  // =====================================================
+  // ============================================
 
   const handleDirectBuy = (product) => {
 
-    setMobileOpen(false);
-
-    setIsSearchingInDrawer(false);
-
-    setDrawerSearchText('');
-
-    setSearchResults([]);
+    handleDrawerToggle();
 
     const rawPrice = product?.price ?? 0;
 
@@ -513,33 +275,32 @@ export default function Header() {
         : parsedShipping;
 
 
-    useNavigateInstance('/payment', {
+    useNavigateInstance(
+      '/payment',
+      {
+        state: {
+          product: {
 
-      state: {
+            id: product?.id,
 
-        product: {
+            title:
+              product?.title ||
+              product?.name ||
+              'Product',
 
-          id: product?.id,
+            price: safePrice,
 
-          title:
-            product?.title ||
-            product?.name ||
-            'Product',
+            image:
+              product?.image || '',
 
-          price: safePrice,
+            quantity: 1,
 
-          image:
-            product?.image || '',
+            shipping: safeShipping
 
-          quantity: 1,
-
-          shipping: safeShipping
-
+          }
         }
-
       }
-
-    });
+    );
 
   };
 
@@ -547,13 +308,13 @@ export default function Header() {
   const avatarSrc = getAvatarUrl(
     user?.avatar ||
     user?.profilePic ||
-    ''
+    ""
   );
 
 
-  // =====================================================
+  // ============================================
   // DRAWER CONTENT
-  // =====================================================
+  // ============================================
 
   const drawerContent = (
 
@@ -570,9 +331,7 @@ export default function Header() {
       role="presentation"
     >
 
-      {/* =============================================== */}
-      {/* DRAWER HEADER */}
-      {/* =============================================== */}
+      {/* Sidebar Header */}
 
       <Box
         sx={{
@@ -600,9 +359,7 @@ export default function Header() {
               onClick={() => {
 
                 setIsSearchingInDrawer(false);
-
                 setDrawerSearchText('');
-
                 setSearchResults([]);
 
               }}
@@ -641,9 +398,6 @@ export default function Header() {
                 border:
                   '1px solid rgba(255, 255, 255, 0.1)',
 
-                transition:
-                  'all 0.3s ease',
-
                 '&:focus-within': {
                   borderColor:
                     '#ff6f00 !important',
@@ -655,24 +409,22 @@ export default function Header() {
                     'rgba(255, 255, 255, 0.12)'
                 },
 
-                '& .MuiInput-underline:before, & .MuiInput-underline:after': {
-                  display: 'none !important'
-                },
+                '& .MuiInput-underline:before, & .MuiInput-underline:after':
+                  {
+                    display: 'none !important',
+                  },
 
                 '& .MuiInputBase-input': {
-                  color:
-                    '#ffffff !important',
-
+                  color: '#ffffff !important',
                   WebkitTextFillColor:
-                    '#ffffff !important'
+                    '#ffffff !important',
                 },
 
                 '& input::placeholder': {
-                  color:
-                    '#888 !important',
-
+                  color: '#888 !important',
                   opacity: 1
                 }
+
               }}
             />
 
@@ -707,13 +459,16 @@ export default function Header() {
                     '0px 4px 12px rgba(255, 111, 0, 0.4)'
                 }}
               >
+
                 <ShoppingBagOutlinedIcon
                   sx={{
                     color: '#ffffff',
                     fontSize: 20
                   }}
                 />
+
               </Box>
+
 
               <Typography
                 variant="h6"
@@ -733,9 +488,7 @@ export default function Header() {
 
             <IconButton
               onClick={handleDrawerToggle}
-              sx={{
-                color: '#aaaaaa'
-              }}
+              sx={{ color: '#aaaaaa' }}
             >
               <CloseIcon />
             </IconButton>
@@ -747,9 +500,7 @@ export default function Header() {
       </Box>
 
 
-      {/* =============================================== */}
-      {/* DRAWER BODY */}
-      {/* =============================================== */}
+      {/* Navigation / Search */}
 
       <Box
         sx={{
@@ -775,9 +526,7 @@ export default function Header() {
               >
                 <CircularProgress
                   size={28}
-                  sx={{
-                    color: '#ff6f00'
-                  }}
+                  sx={{ color: '#ff6f00' }}
                 />
               </Box>
 
@@ -793,38 +542,29 @@ export default function Header() {
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'space-between',
-
                       borderRadius: '8px',
-
                       mb: 1.5,
-
                       p: 1,
-
                       bgcolor:
                         'rgba(255,255,255,0.03)',
-
                       border:
                         '1px solid rgba(255,255,255,0.05)',
-
                       gap: 1
                     }}
                   >
 
-                    {/* PRODUCT */}
-
                     <Box
+                      component={Link}
+                      to={`/products/${product.id}`}
+                      onClick={handleDrawerToggle}
                       sx={{
                         display: 'flex',
                         alignItems: 'center',
                         gap: 1.5,
                         textDecoration: 'none',
                         overflow: 'hidden',
-                        flexGrow: 1,
-                        cursor: 'pointer'
+                        flexGrow: 1
                       }}
-                      onClick={() =>
-                        handleDirectBuy(product)
-                      }
                     >
 
                       <Avatar
@@ -839,11 +579,7 @@ export default function Header() {
                         }}
                       />
 
-                      <Box
-                        sx={{
-                          overflow: 'hidden'
-                        }}
-                      >
+                      <Box sx={{ overflow: 'hidden' }}>
 
                         <Typography
                           variant="body2"
@@ -872,8 +608,6 @@ export default function Header() {
 
                     </Box>
 
-
-                    {/* BUY */}
 
                     <Button
                       onClick={() =>
@@ -941,8 +675,6 @@ export default function Header() {
 
           <List sx={{ p: 0 }}>
 
-            {/* HOME */}
-
             <ListItem
               disablePadding
               sx={{ mb: 1 }}
@@ -961,7 +693,6 @@ export default function Header() {
                   }
                 }}
               >
-
                 <ListItemIcon
                   sx={{
                     color: 'inherit',
@@ -982,8 +713,6 @@ export default function Header() {
             </ListItem>
 
 
-            {/* ORDERS */}
-
             <ListItem
               disablePadding
               sx={{ mb: 1 }}
@@ -993,7 +722,7 @@ export default function Header() {
                 to="/orders"
                 onClick={handleDrawerToggle}
                 sx={{
-                  borderRadius: '8px',
+                  borderRadius: '8%',
 
                   '&:hover': {
                     bgcolor:
@@ -1002,7 +731,6 @@ export default function Header() {
                   }
                 }}
               >
-
                 <ListItemIcon
                   sx={{
                     color: 'inherit',
@@ -1022,8 +750,6 @@ export default function Header() {
               </ListItemButton>
             </ListItem>
 
-
-            {/* SEARCH */}
 
             <ListItem
               disablePadding
@@ -1061,150 +787,150 @@ export default function Header() {
                 />
 
               </ListItemButton>
+
             </ListItem>
 
 
-            {/* USER OPTIONS */}
-
-            <Divider
-              sx={{
-                my: 1.5,
-                borderColor:
-                  'rgba(255, 255, 255, 0.08)'
-              }}
-            />
-
-
-            {isAdmin ? (
+            {token && (
 
               <>
 
-                {/* ADMIN PROFILE */}
+                <Divider
+                  sx={{
+                    my: 1.5,
+                    borderColor:
+                      'rgba(255, 255, 255, 0.08)'
+                  }}
+                />
 
-                <ListItem
-                  disablePadding
-                  sx={{ mb: 1 }}
-                >
-                  <ListItemButton
-                    component={Link}
-                    to="/admin-profile"
-                    onClick={handleDrawerToggle}
-                    sx={{
-                      borderRadius: '8px',
 
-                      '&:hover': {
-                        bgcolor:
-                          'rgba(255, 111, 0, 0.15)',
-                        color: '#ff6f00'
-                      }
-                    }}
+                {isAdmin ? (
+
+                  <>
+
+                    <ListItem
+                      disablePadding
+                      sx={{ mb: 1 }}
+                    >
+                      <ListItemButton
+                        component={Link}
+                        to="/admin-profile"
+                        onClick={handleDrawerToggle}
+                        sx={{
+                          borderRadius: '8px',
+
+                          '&:hover': {
+                            bgcolor:
+                              'rgba(255, 111, 0, 0.15)',
+                            color: '#ff6f00'
+                          }
+                        }}
+                      >
+
+                        <ListItemIcon
+                          sx={{
+                            color: 'inherit',
+                            minWidth: 40
+                          }}
+                        >
+                          <PersonIcon />
+                        </ListItemIcon>
+
+                        <ListItemText
+                          primary="Admin Profile"
+                          primaryTypographyProps={{
+                            fontWeight: 600
+                          }}
+                        />
+
+                      </ListItemButton>
+                    </ListItem>
+
+
+                    <ListItem
+                      disablePadding
+                      sx={{ mb: 1 }}
+                    >
+                      <ListItemButton
+                        component={Link}
+                        to="/admin-dashboard"
+                        onClick={handleDrawerToggle}
+                        sx={{
+                          borderRadius: '8px',
+
+                          '&:hover': {
+                            bgcolor:
+                              'rgba(255, 111, 0, 0.15)',
+                            color: '#ff6f00'
+                          }
+                        }}
+                      >
+
+                        <ListItemIcon
+                          sx={{
+                            color: 'inherit',
+                            minWidth: 40
+                          }}
+                        >
+                          <DashboardIcon />
+                        </ListItemIcon>
+
+                        <ListItemText
+                          primary="Dashboard"
+                          primaryTypographyProps={{
+                            fontWeight: 600
+                          }}
+                        />
+
+                      </ListItemButton>
+                    </ListItem>
+
+                  </>
+
+                ) : (
+
+                  <ListItem
+                    disablePadding
+                    sx={{ mb: 1 }}
                   >
-
-                    <ListItemIcon
+                    <ListItemButton
+                      component={Link}
+                      to="/me"
+                      onClick={handleDrawerToggle}
                       sx={{
-                        color: 'inherit',
-                        minWidth: 40
+                        borderRadius: '8px',
+
+                        '&:hover': {
+                          bgcolor:
+                            'rgba(255, 111, 0, 0.15)',
+                          color: '#ff6f00'
+                        }
                       }}
                     >
-                      <PersonIcon />
-                    </ListItemIcon>
 
-                    <ListItemText
-                      primary="Admin Profile"
-                      primaryTypographyProps={{
-                        fontWeight: 600
-                      }}
-                    />
+                      <ListItemIcon
+                        sx={{
+                          color: 'inherit',
+                          minWidth: 40
+                        }}
+                      >
+                        <PersonIcon />
+                      </ListItemIcon>
 
-                  </ListItemButton>
-                </ListItem>
+                      <ListItemText
+                        primary="My Profile"
+                        primaryTypographyProps={{
+                          fontWeight: 600
+                        }}
+                      />
 
+                    </ListItemButton>
 
-                {/* DASHBOARD */}
+                  </ListItem>
 
-                <ListItem
-                  disablePadding
-                  sx={{ mb: 1 }}
-                >
-                  <ListItemButton
-                    component={Link}
-                    to="/admin-dashboard"
-                    onClick={handleDrawerToggle}
-                    sx={{
-                      borderRadius: '8px',
-
-                      '&:hover': {
-                        bgcolor:
-                          'rgba(255, 111, 0, 0.15)',
-                        color: '#ff6f00'
-                      }
-                    }}
-                  >
-
-                    <ListItemIcon
-                      sx={{
-                        color: 'inherit',
-                        minWidth: 40
-                      }}
-                    >
-                      <DashboardIcon />
-                    </ListItemIcon>
-
-                    <ListItemText
-                      primary="Dashboard"
-                      primaryTypographyProps={{
-                        fontWeight: 600
-                      }}
-                    />
-
-                  </ListItemButton>
-                </ListItem>
+                )}
 
               </>
-
-            ) : (
-
-              /* NORMAL USER */
-
-              <ListItem
-                disablePadding
-                sx={{ mb: 1 }}
-              >
-
-                <ListItemButton
-                  component={Link}
-                  to="/me"
-                  onClick={handleDrawerToggle}
-                  sx={{
-                    borderRadius: '8px',
-
-                    '&:hover': {
-                      bgcolor:
-                        'rgba(255, 111, 0, 0.15)',
-                      color: '#ff6f00'
-                    }
-                  }}
-                >
-
-                  <ListItemIcon
-                    sx={{
-                      color: 'inherit',
-                      minWidth: 40
-                    }}
-                  >
-                    <PersonIcon />
-                  </ListItemIcon>
-
-                  <ListItemText
-                    primary="My Profile"
-                    primaryTypographyProps={{
-                      fontWeight: 600
-                    }}
-                  />
-
-                </ListItemButton>
-
-              </ListItem>
 
             )}
 
@@ -1215,9 +941,7 @@ export default function Header() {
       </Box>
 
 
-      {/* =============================================== */}
-      {/* DRAWER FOOTER */}
-      {/* =============================================== */}
+      {/* Bottom Actions */}
 
       <Box
         sx={{
@@ -1227,12 +951,13 @@ export default function Header() {
         }}
       >
 
-        {/* LOGGED IN */}
-
-        {isLoggedIn ? (
+        {token ? (
 
           <ListItemButton
-            onClick={handleLogout}
+            onClick={() => {
+              handleLogout();
+              handleDrawerToggle();
+            }}
             sx={{
               borderRadius: '8px',
               color: '#ff4d4d',
@@ -1264,8 +989,6 @@ export default function Header() {
 
         ) : (
 
-          /* LOGGED OUT */
-
           <Box
             sx={{
               display: 'flex',
@@ -1291,6 +1014,7 @@ export default function Header() {
             >
               Login
             </Button>
+
 
             <Button
               component={Link}
@@ -1324,9 +1048,9 @@ export default function Header() {
   );
 
 
-  // =====================================================
-  // HEADER
-  // =====================================================
+  // ============================================
+  // MAIN HEADER
+  // ============================================
 
   return (
 
@@ -1353,177 +1077,25 @@ export default function Header() {
         <Toolbar
           disableGutters
           sx={{
-            minHeight:
-              '70px !important',
-
+            minHeight: '70px !important',
             display: 'flex',
-
-            justifyContent:
-              'space-between',
-
+            justifyContent: 'space-between',
             gap: 2
           }}
         >
 
-
-          {/* ================================================= */}
-          {/* LEFT SIDE */}
-          {/* ================================================= */}
+          {/* Left Side */}
 
           <Box
             sx={{
               display: 'flex',
               alignItems: 'center',
-              gap: {
-                xs: 0,
-                sm: 3
-              },
-              flexGrow: 1,
-              minWidth: 0
+              gap: 3,
+              flexGrow: 1
             }}
           >
 
-
-            {/* ================================================= */}
-            {/* MOBILE + TABLET MENU */}
-            {/* ONLY WHEN LOGGED IN */}
-            {/* ================================================= */}
-
-            {isLoggedIn && (
-
-              <Box
-                sx={{
-                  display: {
-                    xs: 'flex',
-                    sm: 'flex',
-                    md: 'none'
-                  },
-
-                  mr: {
-                    xs: 1,
-                    sm: 0
-                  }
-                }}
-              >
-
-                <IconButton
-                  size="large"
-                  aria-label="open drawer"
-                  onClick={handleDrawerToggle}
-                  sx={{
-                    color: '#ffffff'
-                  }}
-                >
-                  <MenuIcon />
-                </IconButton>
-
-              </Box>
-
-            )}
-
-
-            {/* ================================================= */}
-            {/* LOGO */}
-            {/* MOBILE + TABLET */}
-            {/* ================================================= */}
-
-            <Box
-              component={Link}
-              to="/"
-              sx={{
-                display: {
-                  xs: 'flex',
-                  sm: 'flex',
-                  md: 'none'
-                },
-
-                alignItems: 'center',
-                textDecoration: 'none',
-
-                flexGrow:
-                  isLoggedIn
-                    ? 1
-                    : 0
-              }}
-            >
-
-              <Box
-                sx={{
-                  width: {
-                    xs: 36,
-                    sm: 42
-                  },
-
-                  height: {
-                    xs: 36,
-                    sm: 42
-                  },
-
-                  borderRadius: '12px',
-
-                  background:
-                    'linear-gradient(135deg, #ff6f00 0%, #ff8f00 100%)',
-
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-
-                  mr: 1.5,
-
-                  boxShadow:
-                    '0px 4px 14px rgba(255, 111, 0, 0.4)'
-                }}
-              >
-
-                <ShoppingBagOutlinedIcon
-                  sx={{
-                    color: '#ffffff',
-                    fontSize: {
-                      xs: 20,
-                      sm: 24
-                    }
-                  }}
-                />
-
-              </Box>
-
-
-              <Typography
-                variant={
-                  'h5'
-                }
-                noWrap
-                sx={{
-                  fontWeight: 800,
-
-                  letterSpacing:
-                    '-0.5px',
-
-                  color: '#ffffff',
-
-                  fontFamily:
-                    '"Plus Jakarta Sans", sans-serif, system-ui',
-
-                  '& span': {
-                    color: '#ff6f00'
-                  },
-
-                  fontSize: {
-                    xs: '1.25rem',
-                    sm: '1.5rem'
-                  }
-                }}
-              >
-                Go
-                <span>Cart</span>
-              </Typography>
-
-            </Box>
-
-
-            {/* ================================================= */}
-            {/* DESKTOP LOGO */}
-            {/* ================================================= */}
+            {/* Desktop Logo */}
 
             <Box
               component={Link}
@@ -1531,14 +1103,12 @@ export default function Header() {
               sx={{
                 display: {
                   xs: 'none',
-                  sm: 'none',
+                  sm: 'flex',
                   md: 'flex'
                 },
 
                 alignItems: 'center',
-
-                textDecoration:
-                  'none'
+                textDecoration: 'none'
               }}
             >
 
@@ -1577,10 +1147,7 @@ export default function Header() {
                 noWrap
                 sx={{
                   fontWeight: 800,
-
-                  letterSpacing:
-                    '-0.5px',
-
+                  letterSpacing: '-0.5px',
                   color: '#ffffff',
 
                   fontFamily:
@@ -1591,19 +1158,88 @@ export default function Header() {
                   }
                 }}
               >
-                Go
-                <span>Cart</span>
+                Go<span>Cart</span>
               </Typography>
 
             </Box>
 
 
-            {/* ================================================= */}
-            {/* DESKTOP + TABLET SEARCH */}
-            {/* ONLY LOGGED IN */}
-            {/* ================================================= */}
+            {/* 
+              DRAWER / MENU REMOVED FROM MOBILE & TABLET
+              
+              Ab mobile aur tablet par MenuIcon
+              aur Drawer show nahi hoga.
+            */}
 
-            {isLoggedIn &&
+
+            {/* Mobile Logo */}
+
+            <Box
+              component={Link}
+              to="/"
+              sx={{
+                display: {
+                  xs: 'flex',
+                  sm: 'flex',
+                  md: 'none'
+                },
+
+                alignItems: 'center',
+                textDecoration: 'none',
+
+                flexGrow: 1,
+                justifyContent: 'flex-end'
+              }}
+            >
+
+              <Box
+                sx={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: '10px',
+
+                  background:
+                    'linear-gradient(135deg, #ff6f00 0%, #ff8f00 100%)',
+
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+
+                  mr: 1
+                }}
+              >
+
+                <ShoppingBagOutlinedIcon
+                  sx={{
+                    color: '#ffffff',
+                    fontSize: 20
+                  }}
+                />
+
+              </Box>
+
+
+              <Typography
+                variant="h6"
+                noWrap
+                sx={{
+                  fontWeight: 800,
+                  color: '#ffffff',
+
+                  '& span': {
+                    color: '#ff6f00'
+                  }
+                }}
+              >
+                Go<span>Cart</span>
+              </Typography>
+
+            </Box>
+
+
+            {/* Search Bar */}
+
+            {token &&
               location.pathname !== '/me' &&
               location.pathname !== '/orders' &&
               location.pathname !== '/payment' &&
@@ -1620,8 +1256,7 @@ export default function Header() {
                       sm: 'flex'
                     },
 
-                    alignItems:
-                      'center',
+                    alignItems: 'center',
 
                     backgroundColor:
                       'rgba(255, 255, 255, 0.08)',
@@ -1632,7 +1267,6 @@ export default function Header() {
                     py: 0.5,
 
                     flexGrow: 1,
-
                     maxWidth: '400px',
 
                     border:
@@ -1642,6 +1276,7 @@ export default function Header() {
                       'all 0.3s ease',
 
                     '&:focus-within': {
+
                       borderColor:
                         '#ff6f00 !important',
 
@@ -1653,6 +1288,7 @@ export default function Header() {
                     },
 
                     '&:hover': {
+
                       borderColor:
                         'rgba(255, 111, 0, 0.5)'
                     }
@@ -1667,25 +1303,22 @@ export default function Header() {
                     }}
                   />
 
+
                   <InputBase
                     placeholder="Search products..."
                     value={searchQuery}
                     onChange={handleSearchChange}
                     sx={{
-                      color:
-                        '#ffffff !important',
-
+                      color: '#ffffff !important',
                       width: '100%',
-
-                      fontSize:
-                        '0.95rem',
+                      fontSize: '0.95rem',
 
                       '& .MuiInputBase-input': {
                         color:
                           '#ffffff !important',
 
                         WebkitTextFillColor:
-                          '#ffffff !important'
+                          '#ffffff !important',
                       },
 
                       '& input::placeholder': {
@@ -1704,144 +1337,27 @@ export default function Header() {
           </Box>
 
 
-          {/* ================================================= */}
-          {/* RIGHT SIDE */}
-          {/* ================================================= */}
+          {/* Right Side */}
 
           <Box
             sx={{
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'flex-end',
-
-              gap: {
-                xs: 0.5,
-                sm: 2
-              },
-
-              ml: 'auto',
-
-              flexShrink: 0
+              gap: 2,
+              ml: 'auto'
             }}
           >
 
+            {/* Login / Register */}
 
-            {/* ================================================= */}
-            {/* LOGGED OUT - MOBILE + TABLET */}
-            {/* LOGIN REGISTER */}
-            {/* ================================================= */}
-
-            {!isLoggedIn && (
-
-              <Box
-                sx={{
-                  display: {
-                    xs: 'flex',
-                    sm: 'flex',
-                    md: 'none'
-                  },
-
-                  gap: {
-                    xs: 0.3,
-                    sm: 1
-                  },
-
-                  alignItems: 'center'
-                }}
-              >
-
-                <Button
-                  component={Link}
-                  to="/login"
-                  sx={{
-                    color: '#dddddd',
-
-                    fontWeight: 600,
-
-                    textTransform:
-                      'none',
-
-                    fontSize: {
-                      xs: '0.78rem',
-                      sm: '0.92rem'
-                    },
-
-                    px: {
-                      xs: 1,
-                      sm: 2
-                    },
-
-                    minWidth:
-                      'auto',
-
-                    borderRadius: '8px',
-
-                    '&:hover': {
-                      color: '#ff6f00',
-
-                      bgcolor:
-                        'rgba(255, 111, 0, 0.08)'
-                    }
-                  }}
-                >
-                  Login
-                </Button>
-
-
-                <Button
-                  component={Link}
-                  to="/register"
-                  sx={{
-                    color: '#ffffff',
-
-                    fontWeight: 600,
-
-                    textTransform:
-                      'none',
-
-                    fontSize: {
-                      xs: '0.78rem',
-                      sm: '0.92rem'
-                    },
-
-                    px: {
-                      xs: 1,
-                      sm: 2
-                    },
-
-                    minWidth:
-                      'auto',
-
-                    borderRadius: '8px',
-
-                    background:
-                      'linear-gradient(135deg, #ff6f00 0%, #ff8f00 100%)',
-
-                    '&:hover': {
-                      opacity: 0.9
-                    }
-                  }}
-                >
-                  Register
-                </Button>
-
-              </Box>
-
-            )}
-
-
-            {/* ================================================= */}
-            {/* LOGGED OUT - DESKTOP */}
-            {/* ================================================= */}
-
-            {!isLoggedIn && (
+            {!token && (
 
               <Box
                 sx={{
                   display: {
                     xs: 'none',
-                    sm: 'none',
-                    md: 'flex'
+                    sm: 'flex'
                   },
 
                   gap: 1
@@ -1853,22 +1369,14 @@ export default function Header() {
                   to="/login"
                   sx={{
                     color: '#dddddd',
-
                     fontWeight: 600,
-
-                    textTransform:
-                      'none',
-
-                    fontSize:
-                      '0.92rem',
-
+                    textTransform: 'none',
+                    fontSize: '0.92rem',
                     px: 2,
-
                     borderRadius: '8px',
 
                     '&:hover': {
                       color: '#ff6f00',
-
                       bgcolor:
                         'rgba(255, 111, 0, 0.08)'
                     }
@@ -1883,17 +1391,10 @@ export default function Header() {
                   to="/register"
                   sx={{
                     color: '#dddddd',
-
                     fontWeight: 600,
-
-                    textTransform:
-                      'none',
-
-                    fontSize:
-                      '0.92rem',
-
+                    textTransform: 'none',
+                    fontSize: '0.92rem',
                     px: 2,
-
                     borderRadius: '8px',
 
                     background:
@@ -1912,18 +1413,15 @@ export default function Header() {
             )}
 
 
-            {/* ================================================= */}
-            {/* LOGGED IN AVATAR - DESKTOP */}
-            {/* ================================================= */}
+            {/* Avatar */}
 
-            {isLoggedIn && (
+            {token && (
 
               <Box
                 sx={{
                   display: {
                     xs: 'none',
-                    sm: 'none',
-                    md: 'block'
+                    sm: 'block'
                   }
                 }}
               >
@@ -1941,16 +1439,11 @@ export default function Header() {
                       width: 40,
                       height: 40,
 
-                      bgcolor:
-                        '#ff6f00',
-
-                      color:
-                        '#ffffff',
+                      bgcolor: '#ff6f00',
+                      color: '#ffffff',
 
                       fontWeight: 700,
-
-                      fontSize:
-                        '0.95rem',
+                      fontSize: '0.95rem',
 
                       border:
                         '2px solid rgba(255, 255, 255, 0.2)'
@@ -1968,21 +1461,17 @@ export default function Header() {
                 </IconButton>
 
 
-                {/* USER MENU */}
-
                 <Menu
                   sx={{
                     mt: '45px',
 
                     '& .MuiPaper-root': {
-                      bgcolor: '#1a1a1a',
 
+                      bgcolor: '#1a1a1a',
                       color: '#ffffff',
 
                       borderRadius: '12px',
-
-                      minWidth:
-                        '180px',
+                      minWidth: '180px',
 
                       boxShadow:
                         '0px 10px 30px rgba(0,0,0,0.5)',
@@ -1994,9 +1483,7 @@ export default function Header() {
                     }
                   }}
 
-                  anchorEl={
-                    anchorElUser
-                  }
+                  anchorEl={anchorElUser}
 
                   anchorOrigin={{
                     vertical: 'top',
@@ -2010,15 +1497,9 @@ export default function Header() {
                     horizontal: 'right'
                   }}
 
-                  open={
-                    Boolean(
-                      anchorElUser
-                    )
-                  }
+                  open={Boolean(anchorElUser)}
 
-                  onClose={
-                    handleCloseUserMenu
-                  }
+                  onClose={handleCloseUserMenu}
                 >
 
                   {isAdmin ? (
@@ -2028,26 +1509,17 @@ export default function Header() {
                       <MenuItem
                         component={Link}
                         to="/admin-profile"
-                        onClick={
-                          handleCloseUserMenu
-                        }
+                        onClick={handleCloseUserMenu}
                         sx={{
-                          borderRadius:
-                            '8px',
-
+                          borderRadius: '8px',
                           my: '2px',
-
-                          fontSize:
-                            '0.92rem',
-
+                          fontSize: '0.92rem',
                           fontWeight: 500,
 
                           '&:hover': {
                             bgcolor:
                               'rgba(255, 111, 0, 0.15)',
-
-                            color:
-                              '#ff6f00'
+                            color: '#ff6f00'
                           }
                         }}
                       >
@@ -2058,26 +1530,17 @@ export default function Header() {
                       <MenuItem
                         component={Link}
                         to="/admin-dashboard"
-                        onClick={
-                          handleCloseUserMenu
-                        }
+                        onClick={handleCloseUserMenu}
                         sx={{
-                          borderRadius:
-                            '8px',
-
+                          borderRadius: '8px',
                           my: '2px',
-
-                          fontSize:
-                            '0.92rem',
-
+                          fontSize: '0.92rem',
                           fontWeight: 500,
 
                           '&:hover': {
                             bgcolor:
                               'rgba(255, 111, 0, 0.15)',
-
-                            color:
-                              '#ff6f00'
+                            color: '#ff6f00'
                           }
                         }}
                       >
@@ -2093,26 +1556,17 @@ export default function Header() {
                       <MenuItem
                         component={Link}
                         to="/me"
-                        onClick={
-                          handleCloseUserMenu
-                        }
+                        onClick={handleCloseUserMenu}
                         sx={{
-                          borderRadius:
-                            '8px',
-
+                          borderRadius: '8px',
                           my: '2px',
-
-                          fontSize:
-                            '0.92rem',
-
+                          fontSize: '0.92rem',
                           fontWeight: 500,
 
                           '&:hover': {
                             bgcolor:
                               'rgba(255, 111, 0, 0.15)',
-
-                            color:
-                              '#ff6f00'
+                            color: '#ff6f00'
                           }
                         }}
                       >
@@ -2123,26 +1577,17 @@ export default function Header() {
                       <MenuItem
                         component={Link}
                         to="/orders"
-                        onClick={
-                          handleCloseUserMenu
-                        }
+                        onClick={handleCloseUserMenu}
                         sx={{
-                          borderRadius:
-                            '8px',
-
+                          borderRadius: '8px',
                           my: '2px',
-
-                          fontSize:
-                            '0.92rem',
-
+                          fontSize: '0.92rem',
                           fontWeight: 500,
 
                           '&:hover': {
                             bgcolor:
                               'rgba(255, 111, 0, 0.15)',
-
-                            color:
-                              '#ff6f00'
+                            color: '#ff6f00'
                           }
                         }}
                       >
@@ -2157,7 +1602,6 @@ export default function Header() {
                   <Divider
                     sx={{
                       my: 1,
-
                       borderColor:
                         'rgba(255, 255, 255, 0.08)'
                     }}
@@ -2167,18 +1611,11 @@ export default function Header() {
                   <MenuItem
                     onClick={handleLogout}
                     sx={{
-                      borderRadius:
-                        '8px',
-
+                      borderRadius: '8px',
                       my: '2px',
-
-                      fontSize:
-                        '0.92rem',
-
+                      fontSize: '0.92rem',
                       fontWeight: 500,
-
-                      color:
-                        '#ff4d4d',
+                      color: '#ff4d4d',
 
                       '&:hover': {
                         bgcolor:
@@ -2201,50 +1638,6 @@ export default function Header() {
 
       </Container>
 
-
-      {/* ================================================= */}
-      {/* DRAWER */}
-      {/* ONLY LOGGED IN */}
-      {/* MOBILE + TABLET */}
-      {/* ================================================= */}
-
-      {isLoggedIn && (
-
-        <Drawer
-          anchor="left"
-          open={mobileOpen}
-          onClose={handleDrawerToggle}
-
-          ModalProps={{
-            keepMounted: true
-          }}
-
-          sx={{
-            display: {
-              xs: 'block',
-              sm: 'block',
-              md: 'none'
-            },
-
-            '& .MuiDrawer-paper': {
-              boxSizing:
-                'border-box',
-
-              width: 300,
-
-              bgcolor:
-                '#121212'
-            }
-          }}
-        >
-
-          {drawerContent}
-
-        </Drawer>
-
-      )}
-
     </AppBar>
-
   );
 }
