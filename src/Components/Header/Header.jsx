@@ -26,6 +26,126 @@ const DUMMY_PRODUCTS = [
   { id: 103, title: 'Minimalist Casual Backpack', price: 39.99, image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=200' },
   { id: 104, title: 'Classic Stainless Steel Watch', price: 89.50, image: 'https://images.unsplash.com/photo-1524805444758-089113d48a6d?w=200' },
   { id: 105, title: 'Ultra-HD Action Camera 4K', price: 199.00, image: 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=200' },
+  {
+    id: 9901,
+    title: "Classic Black Leather Jacket",
+    price: 120.00,
+    image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    id: 9902,
+    title: "Minimalist Casual White Sneakers",
+    price: 75.50,
+    image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    id: 9903,
+    title: "Modern Wireless Over-Ear Headphones",
+    price: 199.99,
+    image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    id: 9904,
+    title: "Smart Fitness Tracking Watch",
+    price: 149.00,
+    image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&auto=format&fit=crop&q=60"
+  },
+   {
+    id: 9905,
+    title: "Elegant Silver Wristwatch",
+    price: 89.99,
+    image: "https://images.unsplash.com/photo-1524805444758-089113d48a6d?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    id: 9906,
+    title: "Designer Polarized Sunglasses",
+    price: 45.00,
+    image: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=500&auto=format&fit=crop&q=60"
+  },
+   {
+    id: 9907,
+    title: "Waterproof Urban Travel Backpack",
+    price: 65.00,
+    image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    id: 9908,
+    title: "Casual Cotton Crewneck T-Shirt",
+    price: 25.00,
+    image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    id: 9909,
+    title: "Professional DSLR Camera",
+    price: 850.00,
+    image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    id: 9910,
+    title: "Compact Portable Bluetooth Speaker",
+    price: 55.00,
+    image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    id: 9911,
+    title: "Stunning Diamond Gold Ring",
+    price: 450.00,
+    image: "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    id: 9912,
+    title: "Delicate Pearl Pendant Necklace",
+    price: 120.00,
+    image: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    id: 9913,
+    title: "Bohemian Chic Summer Dress",
+    price: 60.00,
+    image: "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    id: 9914,
+    title: "Cozy Knit Oversized Sweater",
+    price: 70.00,
+    image: "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    id: 9915,
+    title: "Athletic Running Sports Shoes",
+    price: 90.00,
+    image: "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    id: 9916,
+    title: "Stainless Steel Insulated Water Bottle",
+    price: 28.00,
+    image: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    id: 9917,
+    title: "Ergonomic Mechanical Gaming Keyboard",
+    price: 110.00,
+    image: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    id: 9918,
+    title: "High-Precision Wireless Gaming Mouse",
+    price: 65.00,
+    image: "https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    id: 9919,
+    title: "Luxury Leather Office Briefcase",
+    price: 180.00,
+    image: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=500&auto=format&fit=crop&q=60"
+  },
+  {
+    id: 9920,
+    title: "Modern Ceramic Coffee Mug",
+    price: 18.00,
+    image: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=500&auto=format&fit=crop&q=60"
+  }
 ];
 
 export default function Header() {
