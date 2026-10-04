@@ -15,9 +15,18 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import PersonIcon from '@mui/icons-material/Person';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { Link, useNavigate, useLocation } from 'react-router'; 
+import { Link, useNavigate, useLocation } from 'react-router-dom'; 
 import { useDispatch, useSelector } from 'react-redux'; 
 import { logout, setSearchQuery, getMe } from '../../Pages/features/authenticationSlice/authenticationSlice';
+
+// Dummy products fallback list
+const DUMMY_PRODUCTS = [
+  { id: 101, title: 'Wireless Bluetooth Headphones', price: 59.99, image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200' },
+  { id: 102, title: 'Smart Fitness Watch Series 5', price: 129.99, image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200' },
+  { id: 103, title: 'Minimalist Casual Backpack', price: 39.99, image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=200' },
+  { id: 104, title: 'Classic Stainless Steel Watch', price: 89.50, image: 'https://images.unsplash.com/photo-1524805444758-089113d48a6d?w=200' },
+  { id: 105, title: 'Ultra-HD Action Camera 4K', price: 199.00, image: 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=200' },
+];
 
 export default function Header() {
   const [mobileOpen, setMobileOpen] = React.useState(false); 
@@ -30,14 +39,14 @@ export default function Header() {
   const [loadingSearch, setLoadingSearch] = React.useState(false);
 
   const dispatch = useDispatch();        
-  const useNavigateInstance = useNavigate();        
+  const navigate = useNavigate();        
   const location = useLocation(); 
 
   const token = useSelector((state) => state.authentication?.token) || localStorage.getItem('token');
   const user = useSelector((state) => state.authentication?.user); 
   const searchQuery = useSelector((state) => state.authentication?.searchQuery || '');
 
-  const isAdmin = user?.role === 'admin' || user?.role === 'Admin';
+  const isAdmin = user?.role?.toLowerCase() === 'admin';
 
   React.useEffect(() => {
     if (!user && token) {
@@ -45,47 +54,52 @@ export default function Header() {
     }
   }, [dispatch, user, token]);
 
-  // Live searching effect inside sidebar using Fake Store API
+  // Live searching effect inside sidebar using Fake Store API with Fallback to DUMMY_PRODUCTS
   React.useEffect(() => {
+    const controller = new AbortController();
+
     const fetchDrawerProducts = async () => {
-      if (!drawerSearchText.trim()) {
-        setSearchResults([]);
-        return;
-      }
       setLoadingSearch(true);
+      let productsList = [];
+
       try {
-        const response = await fetch('https://fakestoreapi.com/products');
-        const data = await response.json();
-        
-        const productsList = Array.isArray(data) ? data : [];
-
-        // Filter products based on user's typing
-        const filtered = productsList.filter(product => {
-          const title = product.title || product.name || '';
-          return title.toLowerCase().includes(drawerSearchText.toLowerCase());
+        const response = await fetch('https://fakestoreapi.com/products', {
+          signal: controller.signal
         });
-
-        setSearchResults(filtered);
+        const data = await response.json();
+        productsList = Array.isArray(data) ? data : [];
       } catch (err) {
-        console.error("Error fetching fake api products:", err);
-      } finally {
-        setLoadingSearch(false);
+        if (err.name !== 'AbortError') {
+          console.log("API failed or network error, falling back to dummy products.");
+        }
       }
+
+      // If API failed, returned empty, or returned no valid items, use fallback dummy products
+      if (productsList.length === 0) {
+        productsList = DUMMY_PRODUCTS;
+      }
+
+      // Filter products based on search input (or show all if input is empty)
+      const filtered = productsList.filter(product => {
+        const title = product.title || product.name || '';
+        return title.toLowerCase().includes(drawerSearchText.toLowerCase());
+      });
+
+      setSearchResults(filtered);
+      setLoadingSearch(false);
     };
 
-    const timer = setTimeout(fetchDrawerProducts, 300); // 300ms debounce
-    return () => clearTimeout(timer);
+    const timer = setTimeout(fetchDrawerProducts, 300);
+    return () => {
+      clearTimeout(timer);
+      controller.abort();
+    };
   }, [drawerSearchText]);
 
   const getAvatarUrl = (path) => {
     if (!path) return "";
-
-    if (path.startsWith("http") || path.startsWith("blob")) {
-      return path;
-    }
-
+    if (path.startsWith("http") || path.startsWith("blob")) return path;
     const cleanPath = path.startsWith("/") ? path : `/${path}`;
-
     return `https://gocartappbackend-production.up.railway.app${cleanPath}`;
   };
 
@@ -100,7 +114,7 @@ export default function Header() {
   };
 
   const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
+    setMobileOpen((prev) => !prev);
     if (mobileOpen) {
       setIsSearchingInDrawer(false);
       setDrawerSearchText('');
@@ -118,35 +132,32 @@ export default function Header() {
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      useNavigateInstance(`/products?search=${encodeURIComponent(searchQuery)}`);
+      navigate(`/products?search=${encodeURIComponent(searchQuery)}`);
     }
   };
 
   const handleLogout = () => {
     handleCloseUserMenu();        
     dispatch(logout());            
-    useNavigateInstance('/login');  
+    navigate('/login');  
   };
 
-  // Helper function to handle direct buy safely with complete number sanitization
   const handleDirectBuy = (product) => {
     handleDrawerToggle();
     
-    // 1. Safe Price Parsing
     const rawPrice = product?.price ?? 0;
     const parsedPrice = typeof rawPrice === 'string' 
       ? parseFloat(rawPrice.replace(/[^0-9.]/g, '')) 
       : Number(rawPrice);
     const safePrice = isNaN(parsedPrice) ? 0 : parsedPrice;
 
-    // 2. Safe Shipping Parsing
     const rawShipping = product?.shipping ?? 0;
     const parsedShipping = typeof rawShipping === 'string' 
       ? parseFloat(rawShipping.replace(/[^0-9.]/g, '')) 
       : Number(rawShipping);
     const safeShipping = isNaN(parsedShipping) ? 0 : parsedShipping;
 
-    useNavigateInstance('/payment', { 
+    navigate('/payment', { 
       state: { 
         product: {
           id: product?.id,
@@ -162,7 +173,6 @@ export default function Header() {
 
   const avatarSrc = getAvatarUrl(user?.avatar || user?.profilePic || "");
 
-  // Sidebar Drawer Content for Mobile Only
   const drawerContent = (
     <Box 
       sx={{ 
@@ -176,13 +186,13 @@ export default function Header() {
       }} 
       role="presentation"
     >
-      {/* Sidebar Header */}
       <Box sx={{ p: 2.5, display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>
         {isSearchingInDrawer ? (
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, width: '100%' }}>
             <IconButton 
-              onClick={() => { setIsSearchingInDrawer(false); setDrawerSearchText(''); setSearchResults([]); }}
+              onClick={() => { setIsSearchingInDrawer(false); setDrawerSearchText(''); }}
               sx={{ color: '#ff6f00', p: 0.5 }}
+              aria-label="back to navigation"
             >
               <ArrowBackIcon />
             </IconButton>
@@ -203,7 +213,6 @@ export default function Header() {
                 py: 0.5, 
                 borderRadius: '6px',
                 border: '1px solid rgba(255, 255, 255, 0.1)',
-                transition: 'all 0.3s ease',
                 '&:focus-within': {
                   borderColor: '#ff6f00 !important',
                   boxShadow: '0 0 0 2px rgba(255, 111, 0, 0.25)',
@@ -244,14 +253,13 @@ export default function Header() {
                 Go<span style={{ color: '#ff6f00' }}>Cart</span>
               </Typography>
             </Box>
-            <IconButton onClick={handleDrawerToggle} sx={{ color: '#aaaaaa' }}>
+            <IconButton onClick={handleDrawerToggle} sx={{ color: '#aaaaaa' }} aria-label="close drawer">
               <CloseIcon />
             </IconButton>
           </>
         )}
       </Box>
 
-      {/* Navigation Links or Live Search Products List */}
       <Box sx={{ flexGrow: 1, overflowY: 'auto', px: 2, py: 2 }}>
         {isSearchingInDrawer ? (
           <Box>
@@ -276,7 +284,6 @@ export default function Header() {
                       gap: 1
                     }}
                   >
-                    {/* Clickable area to view product details */}
                     <Box 
                       component={Link}
                       to={`/products/${product.id}`}
@@ -298,7 +305,6 @@ export default function Header() {
                       </Box>
                     </Box>
 
-                    {/* Buy Button -> Navigates to Payment */}
                     <Button
                       onClick={() => handleDirectBuy(product)}
                       variant="contained"
@@ -322,13 +328,9 @@ export default function Header() {
                   </Box>
                 ))}
               </List>
-            ) : drawerSearchText.trim() ? (
-              <Typography variant="body2" sx={{ color: '#888', textAlign: 'center', mt: 4 }}>
-                No products found.
-              </Typography>
             ) : (
               <Typography variant="body2" sx={{ color: '#888', textAlign: 'center', mt: 4 }}>
-                Type to search items...
+                No products found.
               </Typography>
             )}
           </Box>
@@ -358,7 +360,6 @@ export default function Header() {
               </ListItemButton>
             </ListItem>
 
-            {/* Search Tab Click Trigger */}
             <ListItem disablePadding sx={{ mb: 1 }}>
               <ListItemButton 
                 onClick={() => setIsSearchingInDrawer(true)}
@@ -416,7 +417,6 @@ export default function Header() {
         )}
       </Box>
 
-      {/* Bottom Footer Actions inside Sidebar (Hidden when searching in drawer) */}
       {!isSearchingInDrawer && (
         <Box sx={{ p: 2, borderTop: '1px solid rgba(255, 255, 255, 0.08)' }}>
           {token && (
@@ -447,10 +447,8 @@ export default function Header() {
       <Container maxWidth="xl">
         <Toolbar disableGutters sx={{ minHeight: '70px !important', display: 'flex', justifyContent: 'space-between', gap: 2 }}>
           
-          {/* Left Side: Logo & Search Bar */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 3, flexGrow: 1 }}>
             
-            {/* Logo & Brand Name (Desktop & Tablet) */}
             <Box 
               component={Link} 
               to="/" 
@@ -490,7 +488,6 @@ export default function Header() {
               </Typography>
             </Box>
 
-            {/* 📱 Mobile Only Sidebar Trigger Icon (Only visible when logged in / token exists) */}
             {token && (
               <Box sx={{ display: { xs: 'flex', sm: 'none' }, mr: 1 }}>
                 <IconButton
@@ -506,9 +503,7 @@ export default function Header() {
                   anchor="left"
                   open={mobileOpen}
                   onClose={handleDrawerToggle}
-                  ModalProps={{
-                    keepMounted: true, 
-                  }}
+                  ModalProps={{ keepMounted: true }}
                   sx={{
                     display: { xs: 'block', sm: 'none' },
                     '& .MuiDrawer-paper': { boxSizing: 'border-box', width: 300, bgcolor: '#121212' },
@@ -519,7 +514,6 @@ export default function Header() {
               </Box>
             )}
 
-            {/* Logo & Brand Name (Mobile Only) */}
             <Box 
               component={Link} 
               to="/" 
@@ -558,7 +552,6 @@ export default function Header() {
               </Typography>
             </Box>
 
-            {/* Search Bar (Desktop & Tablet) */}
             {token && 
              location.pathname !== '/me' && 
              location.pathname !== '/orders' && 
@@ -614,7 +607,6 @@ export default function Header() {
 
           </Box>
 
-          {/* Right Side: Profile / Auth Actions */}
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 2, ml: 'auto' }}>
             
             {!token && (
@@ -655,7 +647,7 @@ export default function Header() {
 
             {token && (
               <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-                <IconButton onClick={handleOpenUserMenu} sx={{ p: '2px' }}>
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: '2px' }} aria-label="account settings">
                   <Avatar 
                     src={avatarSrc} 
                     sx={{ 
