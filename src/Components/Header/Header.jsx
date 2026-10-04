@@ -182,11 +182,12 @@ export default function Header() {
         color: '#ffffff', 
         display: 'flex', 
         flexDirection: 'column',
-        boxSizing: 'border-box'
+        boxSizing: 'border-box',
+        overflow: 'hidden'
       }} 
       role="presentation"
     >
-      <Box sx={{ p: 2.5, display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>
+      <Box sx={{ p: 2.5, display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', flexShrink: 0 }}>
         {isSearchingInDrawer ? (
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, width: '100%' }}>
             <IconButton 
@@ -260,7 +261,8 @@ export default function Header() {
         )}
       </Box>
 
-      <Box sx={{ flexGrow: 1, overflowY: 'auto', px: 2, py: 2 }}>
+      {/* Scrollable Container with flexGrow and proper overflow setup */}
+      <Box sx={{ flexGrow: 1, overflowY: 'auto', px: 2, py: 2, WebkitOverflowScrolling: 'touch' }}>
         {isSearchingInDrawer ? (
           <Box>
             {loadingSearch ? (
@@ -418,7 +420,7 @@ export default function Header() {
       </Box>
 
       {!isSearchingInDrawer && (
-        <Box sx={{ p: 2, borderTop: '1px solid rgba(255, 255, 255, 0.08)' }}>
+        <Box sx={{ p: 2, borderTop: '1px solid rgba(255, 255, 255, 0.08)', flexShrink: 0 }}>
           {token && (
             <ListItemButton 
               onClick={() => { handleLogout(); handleDrawerToggle(); }}
