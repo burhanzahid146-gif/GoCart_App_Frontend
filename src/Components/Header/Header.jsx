@@ -21,9 +21,6 @@ import { logout, setSearchQuery, getMe } from '../../Pages/features/authenticati
 
 // Dummy products fallback list
 const DUMMY_PRODUCTS = [
-  { id: 101, title: 'Wireless Bluetooth Headphones', price: 59.99, image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200' },
-  { id: 102, title: 'Smart Fitness Watch Series 5', price: 129.99, image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200' },
-  { id: 103, title: 'Minimalist Casual Backpack', price: 39.99, image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=200' },
   { id: 104, title: 'Classic Stainless Steel Watch', price: 89.50, image: 'https://images.unsplash.com/photo-1524805444758-089113d48a6d?w=200' },
   { id: 105, title: 'Ultra-HD Action Camera 4K', price: 199.00, image: 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=200' },
   {
@@ -49,12 +46,6 @@ const DUMMY_PRODUCTS = [
     title: "Smart Fitness Tracking Watch",
     price: 149.00,
     image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&auto=format&fit=crop&q=60"
-  },
-   {
-    id: 9905,
-    title: "Elegant Silver Wristwatch",
-    price: 89.99,
-    image: "https://images.unsplash.com/photo-1524805444758-089113d48a6d?w=500&auto=format&fit=crop&q=60"
   },
   {
     id: 9906,
